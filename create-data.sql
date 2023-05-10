@@ -21,7 +21,8 @@ insert into Users(username, firstName, lastName, email) values
 ('fashionista', 'Isabella', 'Wright', 'isabella.wright@gmail.com'),
 ('gamer', 'James', 'King', 'james.king@gmail.com'),
 ('animallover', 'Sophia', 'Adams', 'sophia.adams@gmail.com'),
-('sportsfanatic', 'Ethan', 'Phillips', 'ethan.phillips@icloud.com');
+('sportsfanatic', 'Ethan', 'Phillips', 'ethan.phillips@icloud.com'),
+('doja cat', 'Doja', 'Cat', 'dojacat@meow.com');
 
 -- Create Groups
 insert into Groups(groupName, groupDescription, isPublic) values
@@ -62,6 +63,7 @@ insert into GroupUsers(fk_groupId, fk_userId) values
     (6, 19),
     (7, 3),
     (7, 4),
+    (7, 21),
     (8, 1),
     (8, 7),
     (9, 6),
@@ -116,7 +118,8 @@ insert into Posts(creationDate, content, fk_groupId, fk_userId) values
     ('2023-04-27 14:30:00', 'Bonjour! Je cherche quelqu''un avec qui pratiquer mon français. Quelqu''un est intéressé?', 14, 4),
     ('2023-04-26 11:45:00', 'I''m looking for someone to practice Spanish with. Anyone interested in doing a language exchange?', 14, 4),
     ('2023-04-25 17:00:00', 'Have you watched any good movies lately? Share your recommendations with us!', 15, 6),
-    ('2023-04-24 13:20:00', 'Let''s watch a movie together! Any suggestions on what to watch?', 15, 5);
+    ('2023-04-24 13:20:00', 'Let''s watch a movie together! Any suggestions on what to watch?', 15, 5),
+    ('2023-04-24 19:00:00', 'Wow, that''s creative! What was your inspiration for this outfit?', 7, 4);
 
 insert into Comments(creationDate, content, fk_postId, fk_userId) values
     ('2023-05-01 12:20:00', 'Wow! That''s amazing!', 1, 4),
@@ -138,4 +141,5 @@ insert into Comments(creationDate, content, fk_postId, fk_userId) values
     ('2023-05-10 10:47:29', 'I strongly disagree with your perspective.', 9, 8),
     ('2023-05-10 10:54:18', 'Thank you for sharing your insights.', 6, 9),
     ('2023-05-10 11:01:05', 'I think this is a complicated issue with no easy answers.', 4, 13),
-    ('2023-05-10 11:07:52', 'I''m not sure I agree with your interpretation of the data.', 15, 12);
+    ('2023-05-10 11:07:52', 'I''m not sure I agree with your interpretation of the data.', 15, 12),
+    ('2023-04-24 19:01:55', 'Meowwww', 27, 21);
