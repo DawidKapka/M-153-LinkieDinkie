@@ -100,3 +100,18 @@ begin
 
     return @@ROWCOUNT
 end
+
+go
+
+-- get all comments, posts and ratings of user
+create procedure sp_GetAllUserInteractions
+    @userId int
+as
+begin
+    if not exists (select 1 from Users where Users.userId = @userId)
+    -- user not existing
+        throw 50000, 'User existiert nicht!', 1;
+    select * from Posts where fk_userId = @userId;
+    select * from Comments where fk_userId = @userId;
+    select * from Ratings where fk_userId = @userId;
+end
