@@ -121,6 +121,7 @@ insert into Posts(creationDate, content, fk_groupId, fk_userId) values
     ('2023-04-24 13:20:00', 'Let''s watch a movie together! Any suggestions on what to watch?', 15, 5),
     ('2023-04-24 19:00:00', 'Wow, that''s creative! What was your inspiration for this outfit?', 7, 4);
 
+-- Create Comments
 insert into Comments(creationDate, content, fk_postId, fk_userId) values
     ('2023-05-01 12:20:00', 'Wow! That''s amazing!', 1, 4),
     ('2023-05-03 08:00:00', 'Oh god, those are some awful photos :O', 1, 3),
@@ -143,3 +144,26 @@ insert into Comments(creationDate, content, fk_postId, fk_userId) values
     ('2023-05-10 11:01:05', 'I think this is a complicated issue with no easy answers.', 4, 13),
     ('2023-05-10 11:07:52', 'I''m not sure I agree with your interpretation of the data.', 15, 12),
     ('2023-04-24 19:01:55', 'Meowwww', 27, 21);
+
+-- Create Ratings
+insert into Ratings(rating, fk_postId, fk_userId) values
+  (4.0, 2, 1),
+  (3.5, 2, 3),
+  (5.0, 1, 2),
+  (4.0, 3, 4),
+  (3.5, 2, 5),
+  (2.5, 1, 3),
+  (4.5, 3, 2),
+  (3.0, 2, 4),
+  (4.0, 1, 5),
+  (3.5, 3, 1),
+  (4.0, 1, 4),
+  (2.5, 2, 2),
+  (3.0, 3, 3),
+  (4.5, 1, 3),
+  (3.5, 2, 5),
+  (4.0, 1, 2),
+  (3.0, 3, 4),
+  (2.5, 2, 1),
+  (4.5, 3, 5),
+  (3.5, 1, 4);
