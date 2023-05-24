@@ -78,6 +78,16 @@ as
 begin
     if not exists (select 1 from Users where Users.userId = @userId) 
         throw 50000, 'User existiert nicht!', 1;
+
+    -- delete all ratings made by user
+    delete from Ratings where fk_userId = @userId;
+
+    -- delete all ratings from posts made by user
+    delete from Ratings where ratingId in (
+        select ratingId from Ratings where fk_postId in (
+            select postId from Posts where fk_userId = @userId
+        )
+    );
     
     -- delete all comments made by user
     delete from Comments where fk_userId = @userId;
