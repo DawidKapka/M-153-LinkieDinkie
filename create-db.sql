@@ -125,3 +125,35 @@ begin
     select * from Comments where fk_userId = @userId;
     select * from Ratings where fk_userId = @userId;
 end
+
+go
+
+-- get amount of user interaction points
+-- each post = 10pts
+-- each comment = 5pts
+-- each rating = 2pts
+create function fn_GetUserInteractionScore(
+    @userId int
+) returns int as
+begin 
+    if not exists (select 1 from Users where Users.userId = @userId)
+        return null;
+
+    declare @postAmount int
+    declare @commentAmount int
+    declare @ratingAmount int 
+
+    -- get amount of posts created by user
+    select @postAmount = count(*) from Posts where Posts.fk_userId = @userId;
+
+    -- get amount of comments created by user
+    select @commentAmount = count(*) from Comments where Comments.fk_userId = @userId;
+
+    -- get amount of ratings created by user
+    select @ratingAmount = count(*) from Ratings where Ratings.fk_userId = @userId;
+
+    return 
+    (@postAmount * 10) + -- 10pts/post
+    (@commentAmount * 5) + -- 5pts/comment
+    (@ratingAmount * 2); -- 2pts/rating
+end
