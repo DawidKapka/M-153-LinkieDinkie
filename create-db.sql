@@ -68,4 +68,35 @@ alter table Ratings add
 
 alter table GroupUsers add 
     foreign key (fk_groupId) references Groups(groupId),
-    foreign key (fk_userId) references Users(userId)
+    foreign key (fk_userId) references Users(userId);
+
+go
+
+create procedure sp_BanUser
+    @userId int
+as 
+begin
+    if not exists (select 1 from Users where Users.userId = @userId) 
+        throw 50000, 'User existiert nicht!', 1;
+    
+    -- delete all comments made by user
+    delete from Comments where fk_userId = @userId;
+
+    -- delete all comments from posts made by user
+    delete from Comments where commentId in (
+        select commentId from Comments where fk_postId in (
+            select postId from Posts where fk_userId = 1
+        )
+    );
+    
+    -- delete all posts made by user
+    delete from Posts where fk_userId = @userId;
+
+    -- delete user from all groups
+    delete from GroupUsers where fk_userId = @userId;
+
+    -- delete user
+    delete from Users where userId = @userId;
+
+    return @@ROWCOUNT
+end
