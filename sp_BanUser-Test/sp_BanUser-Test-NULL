@@ -1,0 +1,8 @@
+-- Error case: should throw an error when NULL passed as userId
+
+declare @userId int 
+select @userId = NULL;
+
+exec sp_BanUser @userId;
+
+-- Expected Result: Error Message "userId kann nicht NULL sein!"
