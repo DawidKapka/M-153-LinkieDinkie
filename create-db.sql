@@ -76,8 +76,20 @@ create procedure sp_BanUser
     @userId int
 as 
 begin
+    if @userId is null
+        throw 50000, 'userId kann nicht NULL sein!', 1;
     if not exists (select 1 from Users where Users.userId = @userId) 
         throw 50000, 'User existiert nicht!', 1;
+
+    -- delete all ratings made by user
+    delete from Ratings where fk_userId = @userId;
+
+    -- delete all ratings from posts made by user
+    delete from Ratings where ratingId in (
+        select ratingId from Ratings where fk_postId in (
+            select postId from Posts where fk_userId = @userId
+        )
+    );
     
     -- delete all comments made by user
     delete from Comments where fk_userId = @userId;
@@ -85,7 +97,7 @@ begin
     -- delete all comments from posts made by user
     delete from Comments where commentId in (
         select commentId from Comments where fk_postId in (
-            select postId from Posts where fk_userId = 1
+            select postId from Posts where fk_userId = @userId
         )
     );
     
@@ -108,6 +120,8 @@ create procedure sp_GetAllUserInteractions
     @userId int
 as
 begin
+    if @userId is null
+        throw 50000, 'userId kann nicht NULL sein!', 1;
     if not exists (select 1 from Users where Users.userId = @userId)
     -- user not existing
         throw 50000, 'User existiert nicht!', 1;
@@ -115,3 +129,66 @@ begin
     select * from Comments where fk_userId = @userId;
     select * from Ratings where fk_userId = @userId;
 end
+
+go
+
+-- get amount of user interaction points
+-- each post = 10pts
+-- each comment = 5pts
+-- each rating = 2pts
+create function fn_GetUserInteractionScore(
+    @userId int
+) returns int as
+begin 
+    if not exists (select 1 from Users where Users.userId = @userId)
+        return null;
+
+    declare @postAmount int
+    declare @commentAmount int
+    declare @ratingAmount int 
+
+    -- get amount of posts created by user
+    select @postAmount = count(*) from Posts where Posts.fk_userId = @userId;
+
+    -- get amount of comments created by user
+    select @commentAmount = count(*) from Comments where Comments.fk_userId = @userId;
+
+    -- get amount of ratings created by user
+    select @ratingAmount = count(*) from Ratings where Ratings.fk_userId = @userId;
+
+    return 
+    (@postAmount * 10) + -- 10pts/post
+    (@commentAmount * 5) + -- 5pts/comment
+    (@ratingAmount * 2); -- 2pts/rating
+end
+
+go
+
+ -- Most popular post = most comments + best ratings
+create function fn_GetMostPopularPostFromGroup(
+    @groupId int 
+) returns varchar(max) as 
+begin
+    if not exists (select 1 from Groups where groupId = @groupId)
+        return null;
+
+    declare @avgRating float
+    declare @commentAmount int 
+    declare @mostPopularPost varchar(max)
+
+    select @mostPopularPost = Posts.content from Posts where Posts.postId = (
+        select postId from (
+            select top 1 Posts.postId, 
+            count(Comments.commentId) + (avg(Ratings.rating) * 10) as "popularityPoints"
+            from Groups
+            join Posts on Posts.fk_groupId = Groups.groupId
+            join Comments on Comments.fk_postId = Posts.postId
+            join Ratings on Posts.postId = Ratings.fk_postId
+            where Groups.groupId = 1
+            group by Posts.postId
+            order by popularityPoints desc
+        ) mostPopularPost
+    );
+
+    return @mostPopularPost;
+end 
