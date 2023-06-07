@@ -1,0 +1,7 @@
+-- Fail case: should return NULL if group does not exist
+
+declare @groupId int
+select @groupId = 99;
+
+select @groupId as 'Group Id', dbo.fn_GetMostPopularPostFromGroup(@groupId) as 'Most Popular Post';
+-- expected result: table with the groupId and NULL
